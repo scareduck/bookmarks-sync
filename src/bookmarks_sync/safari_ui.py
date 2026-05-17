@@ -153,8 +153,12 @@ on deleteOutlineRow(rowIndex)
             if bookmarkOutline is missing value then error "Could not find Safari bookmarks outline."
             if rowIndex > (count of rows of bookmarkOutline) then return false
             set targetRow to row rowIndex of bookmarkOutline
-            select targetRow
-            delay 0.1
+            set rowPos to position of targetRow
+            set rowSz to size of targetRow
+            set clickX to (item 1 of rowPos) + 10
+            set clickY to (item 2 of rowPos) + ((item 2 of rowSz) / 2)
+            click at {{clickX, clickY}}
+            delay 0.2
             key code 51
             delay 0.2
             my confirmDeleteIfNeeded()

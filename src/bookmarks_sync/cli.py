@@ -232,13 +232,14 @@ def delete_top_level_ui(args: argparse.Namespace) -> int:
     if not args.yes_really_click_safari:
         print("Dry run only. Re-run with --yes-really-click-safari to delete through Safari UI.")
         return 0
-    print(
-        "Refusing to run this UI deletion method: Safari's bookmark editor rows "
-        "are visible through Accessibility, but row selection/manipulation hangs.",
-        file=sys.stderr,
-    )
-    print("Delete top-level items manually in Safari, or use prune-safari-top-level --apply for local plist cleanup.", file=sys.stderr)
-    return 2
+    try:
+        delete_top_level_bookmark_items([item.index for item in target_items])
+    except SafariUIAutomationError as exc:
+        print(str(exc), file=sys.stderr)
+        print("Safari UI deletion did not complete.", file=sys.stderr)
+        return 1
+    print("Safari top-level bookmark deletion completed.")
+    return 0
 
 
 def backup(args: argparse.Namespace) -> int:
